@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DefaultTheme" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="LoginTheme" parent="AppTheme.NoActionBar">
+
+    </style>
+
+    <style name="DashboardTheme" parent="DefaultTheme">
+        <!--<item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="tabStyle">@style/AppTabLayout</item>
+        <item name="materialCardViewStyle">@style/Widget.App.CardView</item>-->
+    </style>
+
+</resources>

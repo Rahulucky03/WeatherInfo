@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "409397247840",
+    "firebase_url": "https://quiz-app-d0e4f.firebaseio.com",
+    "project_id": "quiz-app-d0e4f",
+    "storage_bucket": "quiz-app-d0e4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409397247840:android:84ae5a9d7a8b0ff0",
+        "android_client_info": {
+          "package_name": "com.developerrahulucky.udacityscholarsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409397247840-fap0lpifv4m0n91rh43rrtghc0kdjf1n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.developerrahulucky.udacityscholarsapp",
+            "certificate_hash": "aa099d0cc538e7b7f9c4a73bba82d5e144056195"
+          }
+        },
+        {
+          "client_id": "409397247840-kfmpu81griipk31jnrvlcomq902lgv9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSBZM_lUshH0c5LNj4JMWQW4EBwJerZTw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409397247840-kfmpu81griipk31jnrvlcomq902lgv9g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409397247840:android:cbf3aa895781a9835fa805",
+        "android_client_info": {
+          "package_name": "com.weather.info"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "409397247840-tt5aucrfj5r00sqg8k7dqrdrqpp4hje3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.weather.info",
+            "certificate_hash": "93d43faa27f0990d2a8f32ead85224a9d30b6bdb"
+          }
+        },
+        {
+          "client_id": "409397247840-kfmpu81griipk31jnrvlcomq902lgv9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSBZM_lUshH0c5LNj4JMWQW4EBwJerZTw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "409397247840-kfmpu81griipk31jnrvlcomq902lgv9g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

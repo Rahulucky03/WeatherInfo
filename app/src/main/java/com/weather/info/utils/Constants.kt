@@ -3,7 +3,9 @@ package com.weather.info.utils
 object Constants {
 
     const val PREF_NAME = "pref_weather"
-    const val DB_NAME = "medatwal.db"
+    const val DB_NAME = "weather.db"
+
+    const val WEATHER_IMAGE_BASE = "http://openweathermap.org/img/wn/%s@2x.png"
 
     const val WEATHER_API = "dec60757a99f4d987ffb0ab9119aa466"
 

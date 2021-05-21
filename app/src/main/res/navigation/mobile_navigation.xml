@@ -17,9 +17,13 @@
 
     <fragment
         android:id="@+id/nav_history"
-        android:name="com.weather.info.ui.dashboard.ui.gallery.GalleryFragment"
+        android:name="com.weather.info.ui.dashboard.ui.hisory.HistoryFragment"
         android:label="@string/menu_history"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_nav_history_to_weatherDetailFragment"
+            app:destination="@id/weatherDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/weatherDetailFragment"
@@ -28,9 +32,9 @@
         tools:layout="@layout/fragment_weather_detail">
 
         <argument
-            android:name="latLng"
+            android:name="history"
             android:defaultValue="@null"
-            app:argType="com.google.android.gms.maps.model.LatLng"
+            app:argType="com.weather.info.data.room.entity.History"
             app:nullable="true" />
 
     </fragment>

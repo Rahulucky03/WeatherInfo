@@ -1,6 +1,6 @@
 package com.weather.info.data.remote
 
-import com.weather.info.data.model.Weather
+import com.weather.info.data.model.weather.Weather
 import io.reactivex.Observable
 import retrofit2.Response
 

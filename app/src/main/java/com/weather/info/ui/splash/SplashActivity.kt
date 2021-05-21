@@ -6,7 +6,7 @@ import android.os.Looper
 import android.view.View
 import androidx.activity.viewModels
 import com.weather.info.R
-import com.weather.info.base.BaseActivity
+import com.weather.info.base.activity.BaseActivity
 import com.weather.info.data.enums.AppFlow
 import com.weather.info.databinding.FragmentSplashBinding
 import com.weather.info.ui.dashboard.DashboardActivity

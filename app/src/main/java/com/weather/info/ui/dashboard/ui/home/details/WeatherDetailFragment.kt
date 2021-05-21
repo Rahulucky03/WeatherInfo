@@ -5,10 +5,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.tabs.TabLayoutMediator
 import com.weather.info.R
 import com.weather.info.base.fragment.BaseFragment
+import com.weather.info.data.room.entity.History
 import com.weather.info.databinding.FragmentWeatherDetailBinding
 import com.weather.info.ui.dashboard.ui.home.details.child.WeatherChildFragment
 import com.weather.info.utils.anim.DepthPageTransformer
@@ -21,7 +21,7 @@ class WeatherDetailFragment : BaseFragment<WeatherDetailViewModel, FragmentWeath
 
     private val weatherViewModel: WeatherDetailViewModel by viewModels()
 
-    var latLng: LatLng? = null
+    var history: History? = null
 
     override fun getViewModel(): WeatherDetailViewModel = weatherViewModel
 
@@ -32,15 +32,7 @@ class WeatherDetailFragment : BaseFragment<WeatherDetailViewModel, FragmentWeath
         savedInstanceState: Bundle?
     ) {
 
-        latLng = WeatherDetailFragmentArgs.fromBundle(requireArguments()).latLng
-
-        /*viewModel.text.observe(this){
-            if (latLng != null){
-                binder.textHome.text = "$it with ${latLng?.latitude}, ${latLng?.longitude}"
-            }else {
-                binder.textHome.text = it
-            }
-        }*/
+        history = WeatherDetailFragmentArgs.fromBundle(requireArguments()).history
 
         binder.viewpager.adapter = ScreenSlidePagerAdapter(this)
         binder.viewpager.setPageTransformer(DepthPageTransformer())
@@ -64,7 +56,7 @@ class WeatherDetailFragment : BaseFragment<WeatherDetailViewModel, FragmentWeath
             val fragment = WeatherChildFragment()
             val bundle = Bundle()
             bundle.putInt("position", position)
-            bundle.putParcelable("latLng", latLng)
+            bundle.putParcelable("history", history)
             fragment.arguments = bundle
             return fragment
         }

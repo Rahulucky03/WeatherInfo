@@ -16,11 +16,7 @@
 
 package com.weather.info.data.room.dao
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.weather.info.data.room.entity.History
 
 /**
@@ -29,15 +25,16 @@ import com.weather.info.data.room.entity.History
 @Dao
 interface HistoryDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(history: History)
-
     @Query("SELECT * FROM history WHERE historyId = :historyId")
-    fun findByHistoryId(historyId: Int): LiveData<History>
+    suspend fun findByHistoryId(historyId: Int): History
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertHistory(history: History)
+    suspend fun insertHistory(history: History)
 
+    @Query("SELECT * FROM history")
+    suspend fun getAllHistory(): List<History>
 
-    /*abstract fun loadUsers(user: User): LiveData<User?>*/
+    @Delete
+    suspend fun deleteHistory(history: History): Int //return no of items deleted(In current case 1)
+
 }

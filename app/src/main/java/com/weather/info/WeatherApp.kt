@@ -1,6 +1,8 @@
 package com.weather.info
 
 import android.app.Application
+import androidx.databinding.DataBindingUtil
+import com.weather.info.binding.BindingComponent
 import dagger.hilt.android.HiltAndroidApp
 
 
@@ -18,7 +20,7 @@ class WeatherApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        //DataBindingUtil.setDefaultComponent(BindingComponent())
+        DataBindingUtil.setDefaultComponent(BindingComponent())
 
     }
 }

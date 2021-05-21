@@ -2,7 +2,7 @@ package com.weather.info.data.remote
 
 
 import android.content.Context
-import com.weather.info.data.model.Weather
+import com.weather.info.data.model.weather.Weather
 import com.weather.info.data.pref.AppPreferenceManager
 import com.weather.info.data.remote.service.ApiService
 import com.weather.info.utils.Constants

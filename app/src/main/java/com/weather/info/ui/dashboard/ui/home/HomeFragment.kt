@@ -4,7 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.location.*
+import android.location.Address
+import android.location.Geocoder
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Looper
@@ -14,7 +15,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ApiException
@@ -24,15 +24,12 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
-import com.google.android.libraries.places.api.net.PlacesClient
 import com.nabinbhandari.android.permissions.PermissionHandler
 import com.nabinbhandari.android.permissions.Permissions
 import com.weather.info.R
 import com.weather.info.WeatherApp
 import com.weather.info.base.fragment.BaseFragment
+import com.weather.info.data.room.entity.History
 import com.weather.info.databinding.FragmentHomeBinding
 import com.weather.info.utils.view.WorkaroundMapFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,10 +78,6 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(), OnMapRe
      */
     private var mRequestingLocationUpdates: Boolean = false
 
-
-    private lateinit var placesClient: PlacesClient
-
-
     override val layoutRes: Int = R.layout.fragment_home
 
     private val homeViewModel: HomeViewModel by viewModels()
@@ -92,11 +85,8 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(), OnMapRe
     override fun getViewModel(): HomeViewModel = homeViewModel
 
     private lateinit var map: GoogleMap
-    //private lateinit var locationManager: LocationManager
 
     companion object {
-        private const val MIN_TIME: Long = 400
-        private const val MIN_DISTANCE = 1000f
 
         /**
          * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -115,17 +105,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(), OnMapRe
         super.onResume()
         // Within {@code onPause()}, we remove location updates. Here, we resume receiving
         // location updates if the user has requested them.
-        val permissionState =
-            ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-
-        if (mRequestingLocationUpdates && permissionState == PackageManager.PERMISSION_GRANTED) {
-            startLocationUpdates()
-        } else if (permissionState != PackageManager.PERMISSION_GRANTED) {
-            getLocationPermission()
-        }
+        initMap()
     }
 
     override fun onReadyToRender(
@@ -136,20 +116,19 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(), OnMapRe
     ) {
         mRequestingLocationUpdates = true
         binder.fab.setOnClickListener {
-            val navDirections =
-                HomeFragmentDirections.actionNavHomeToWeatherDetailFragment(markerLatLong)
-            findNavController().navigate(navDirections)
+            viewModel.saveLocationInRoom(markerLatLong, binder.tvAddress.text.toString())
         }
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         mSettingsClient = LocationServices.getSettingsClient(requireContext())
 
-
-        initMap()
         createLocationCallback()
         createLocationRequest()
         buildLocationSettingsRequest()
+        requestCurrentLocation()
+    }
 
+    private fun requestCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -168,32 +147,14 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(), OnMapRe
             return
         }
         mFusedLocationClient?.lastLocation?.addOnSuccessListener {
-            map.moveCamera(CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude)))
+            if (::map.isInitialized) {
+                map.moveCamera(CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude)))
+            }
         }
     }
 
     private fun initMap() {
-        (childFragmentManager.findFragmentById(R.id.map) as WorkaroundMapFragment).getMapAsync(
-            this
-        )
-
-        Places.initialize(requireContext(), getString(R.string.google_maps_api))
-
-        placesClient = Places.createClient(requireContext())
-        val listOf =
-            listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
-        val placeFields = java.util.ArrayList(listOf)
-        val findCurrentPlaceRequest = FindCurrentPlaceRequest.newInstance(placeFields)
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            mLocationPermissionGranted = true
-            placesClient.findCurrentPlace(findCurrentPlaceRequest)
-        } else {
-            mLocationPermissionGranted = false
-        }
+        (childFragmentManager.findFragmentById(R.id.map) as WorkaroundMapFragment).getMapAsync(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -207,9 +168,30 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>(), OnMapRe
         (childFragmentManager.findFragmentById(R.id.map) as WorkaroundMapFragment)
             .setListener { getDataBinder().scrollView.requestDisallowInterceptTouchEvent(true) }
 
+        requestCurrentLocation()
+
         map.setOnCameraIdleListener { //get latlng at the center by calling
             markerLatLong = map.cameraPosition.target
             showAddress(getDataBinder().tvAddress, markerLatLong)
+        }
+    }
+
+    override fun subscribeObserver(viewModel: HomeViewModel) {
+        super.subscribeObserver(viewModel)
+        getViewModel().moveToDetails.observe(this) {
+            if (it != null && it == true) {
+
+                val navDirections = HomeFragmentDirections.actionNavHomeToWeatherDetailFragment(
+                    History(
+                        0,
+                        markerLatLong,
+                        getDataBinder().tvAddress.text.toString()
+                    )
+                )
+                findNavController().navigate(navDirections)
+
+                getViewModel().moveToDetails.value = false
+            }
         }
     }
 

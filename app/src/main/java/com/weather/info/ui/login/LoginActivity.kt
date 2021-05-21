@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.weather.info.R
-import com.weather.info.base.BaseActivity
+import com.weather.info.base.activity.BaseActivity
 import com.weather.info.databinding.ActivityLoginBinding
 import com.weather.info.ui.dashboard.DashboardActivity
 import com.weather.info.utils.Constants

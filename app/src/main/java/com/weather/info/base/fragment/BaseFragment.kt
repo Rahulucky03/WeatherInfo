@@ -14,7 +14,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.weather.info.base.BaseActivity
+import com.weather.info.base.activity.BaseActivity
 import com.weather.info.base.progress.ProgressBarManager
 import com.weather.info.base.viewmodel.BaseViewModel
 import com.weather.info.data.AppDataManager
@@ -66,7 +66,6 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
         super.onCreate(savedInstanceState)
         mViewModel = getViewModel()
         setHasOptionsMenu(false)
-        subscribeObserver(mViewModel)
     }
 
     override fun onCreateView(
@@ -87,6 +86,7 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
                 binder?.let { binder ->
                     progressListener = ProgressBarManager(getProgressBar())
                     //changeStatusBarColor(isTransparent())
+                    subscribeObserver(mViewModel)
                     onReadyToRender(view, vm, binder, savedInstanceState)
                 }
             }
@@ -105,7 +105,7 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
 
     @CallSuper
     open fun subscribeObserver(viewModel: VM) {
-        viewModel.success.observe(this) {
+        viewModel.success.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 if (it != null && it.isNotEmpty()) {
                     success(rootView ?: getDataBinder().root, it, Snackbar.LENGTH_SHORT).show()
@@ -113,7 +113,7 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
                 }
             }
         }
-        viewModel.info.observe(this) {
+        viewModel.info.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 if (it != null && it.isNotEmpty()) {
                     info(rootView ?: getDataBinder().root, it, Snackbar.LENGTH_SHORT).show()
@@ -121,7 +121,7 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
                 }
             }
         }
-        viewModel.normal.observe(this) {
+        viewModel.normal.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 if (it != null && it.isNotEmpty()) {
                     normal(rootView ?: getDataBinder().root, it, Snackbar.LENGTH_SHORT).show()
@@ -129,7 +129,7 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
                 }
             }
         }
-        viewModel.warning.observe(this) {
+        viewModel.warning.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 if (it != null && it.isNotEmpty()) {
                     warning(rootView ?: getDataBinder().root, it, Snackbar.LENGTH_SHORT).show()
@@ -137,7 +137,7 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
                 }
             }
         }
-        viewModel.error.observe(this) {
+        viewModel.error.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 if (it != null && it.isNotEmpty()) {
                     error(rootView ?: getDataBinder().root, it, Snackbar.LENGTH_SHORT).show()
@@ -145,7 +145,7 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
                 }
             }
         }
-        viewModel.unAuthorizeError.observe(this) {
+        viewModel.unAuthorizeError.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 if (it != null && it.isNotEmpty()) {
                     error(rootView ?: getDataBinder().root, it, Snackbar.LENGTH_SHORT)
@@ -158,7 +158,7 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
             }
         }
 
-        viewModel.logoutSuccess.observe(this) {
+        viewModel.logoutSuccess.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 if (it != null && it == true) {
                     LoginActivity.startInstanceWithBackStackCleared(requireContext())
@@ -171,19 +171,19 @@ abstract class BaseFragment<VM : BaseViewModel, T : ViewDataBinding> : Fragment(
 
 
 
-        viewModel.loading.observe(this) {
+        viewModel.loading.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 progressListener.showLoading(it)
             }
         }
 
-        viewModel.isServerNotAvailable.observe(this) {
+        viewModel.isServerNotAvailable.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
                 Snackbar.make(requireView(), "Server not running", Snackbar.LENGTH_SHORT).show()
             }
         }
 
-        viewModel.isTokenExpired.observe(this) {
+        viewModel.isTokenExpired.observe(viewLifecycleOwner) {
             if (requireView().isVisible) {
 
             }

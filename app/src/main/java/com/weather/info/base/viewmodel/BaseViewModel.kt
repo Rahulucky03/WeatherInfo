@@ -207,4 +207,26 @@ abstract class BaseViewModel(
         }
     }
 
+    inline fun <T> launchAsync(
+        crossinline execute: suspend () -> Response<T>,
+        crossinline onSuccess: (T) -> Unit,
+        showProgress: Boolean = true
+    ) {
+        viewModelScope.launch {
+            if (showProgress)
+                loading.value = true
+            try {
+                val result = execute()
+                if (result.isSuccessful)
+                    onSuccess(result.body()!!)
+                else
+                    error.value = result.message()
+            } catch (ex: Exception) {
+                error.value = ex.message
+            } finally {
+                loading.value = false
+            }
+        }
+    }
+
 }

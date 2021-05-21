@@ -16,6 +16,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -47,11 +49,18 @@ class AppModule {
     @Singleton
     @Provides
     fun provideApiService(): ApiService {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val okHttp = OkHttpClient().newBuilder()
+        okHttp.addInterceptor(loggingInterceptor)
+
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL_WEB)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             //.addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .client(okHttp.build())
             .build()
             .create(ApiService::class.java)
     }
@@ -61,6 +70,7 @@ class AppModule {
     fun provideDb(app: Application): WeatherDb {
         return Room
             .databaseBuilder(app, WeatherDb::class.java, Constants.DB_NAME)
+            //.allowMainThreadQueries()//Queries on main thread...
             .fallbackToDestructiveMigration()
             .build()
     }

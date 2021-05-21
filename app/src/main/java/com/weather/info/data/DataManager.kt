@@ -2,8 +2,9 @@ package com.weather.info.data
 
 import com.weather.info.data.pref.PreferenceSource
 import com.weather.info.data.remote.RemoteSource
+import com.weather.info.data.room.RoomManager
 
-interface DataManager : RemoteSource, PreferenceSource/*, DatabaseSource*/ {
+interface DataManager : RemoteSource, PreferenceSource, RoomManager {
     enum class LoggedInMode(val type: Int) {
         LOGGED_IN_MODE_LOGGED_OUT(0),
         LOGGED_IN_MODE_LOGGEDIN(1)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
@@ -12,7 +13,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.weather.info.R
-import com.weather.info.base.BaseActivity
+import com.weather.info.base.activity.BaseActivity
 import com.weather.info.databinding.ActivityDashboardBinding
 import com.weather.info.databinding.NavHeaderMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -75,6 +76,13 @@ class DashboardActivity : BaseActivity<DashboardViewModel, ActivityDashboardBind
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.dashboard, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_settings) {
+            getViewModel().normal.value = "Setting"
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {
